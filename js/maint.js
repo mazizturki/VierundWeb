@@ -82,7 +82,7 @@ class MaintenanceSystem {
           <h1>🛠 Maintenance </h1>
           <p class="maintenance-message">${message}</p>
           <div class="maintenance-details">
-            <p>Vieurnd Web v1.0.0</p>
+            <p>Vierund Web v1.0.0</p>
             <p>Veuillez nous excuser pour la gêne occasionnée.</p>
           </div>
           <div class="maintenance-footer">
