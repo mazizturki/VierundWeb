@@ -26,60 +26,100 @@
             --purple-accent: #7B2CBF;
         }
 
-        /* Ajoutez à votre section style */
-        .maintenance-mode {
-        position: relative;
-        }
-
-        .maintenance-mode::after {
-        content: '';
+        /* Ajoutez ceci à votre feuille de style */
+        #full-maintenance-page {
         position: fixed;
         top: 0;
         left: 0;
         right: 0;
         bottom: 0;
-        background: rgba(10, 26, 47, 0.85);
-        z-index: 1000;
-        pointer-events: none;
-        }
-
-        .maintenance-banner {
-        position: fixed;
-        top: 0;
-        left: 0;
-        right: 0;
-        background: #dc3545;
-        color: white;
-        padding: 12px 0;
-        z-index: 2000;
-        text-align: center;
-        font-weight: 500;
-        box-shadow: 0 2px 10px rgba(0,0,0,0.3);
-        animation: pulse 2s infinite;
-        }
-
-        .maintenance-content {
+        background: #0A1128;
+        color: #FFFFFF;
+        z-index: 9999;
         display: flex;
-        align-items: center;
         justify-content: center;
-        gap: 10px;
-        max-width: 1200px;
-        margin: 0 auto;
+        align-items: center;
+        text-align: center;
+        padding: 20px;
         }
 
-        .maintenance-icon {
-        font-size: 1.2em;
+        .maintenance-container {
+        max-width: 800px;
+        padding: 40px;
+        background: rgba(10, 26, 47, 0.9);
+        border-radius: 10px;
+        border: 1px solid rgba(0, 240, 255, 0.2);
+        box-shadow: 0 0 30px rgba(0, 240, 255, 0.1);
         }
 
-        .maintenance-bypass .maintenance-banner,
-        .maintenance-bypass::after {
-        display: none !important;
+        .maintenance-content h1 {
+        font-size: 2.5rem;
+        color: #00F0FF;
+        margin-bottom: 20px;
         }
 
+        .maintenance-message {
+        font-size: 1.5rem;
+        color: #FFFFFF;
+        margin-bottom: 30px;
+        padding: 15px;
+        background: rgba(220, 53, 69, 0.2);
+        border-left: 4px solid #dc3545;
+        }
+
+        .maintenance-details {
+        margin: 30px 0;
+        line-height: 1.6;
+        }
+
+        .maintenance-footer {
+        margin-top: 40px;
+        font-size: 0.9rem;
+        color: rgba(255, 255, 255, 0.7);
+        }
+
+        .maintenance-footer a {
+        color: #00F0FF;
+        text-decoration: none;
+        }
+
+        /* Animation */
         @keyframes pulse {
         0% { opacity: 0.9; }
         50% { opacity: 1; }
         100% { opacity: 0.9; }
+        }
+
+        .maintenance-content {
+        animation: pulse 3s infinite;
+        }
+
+        /* Ajoutez à votre CSS */
+        #bypass-indicator {
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        background: #28a745;
+        color: white;
+        padding: 10px;
+        text-align: center;
+        z-index: 99999;
+        font-size: 14px;
+        }
+
+        #bypass-indicator button {
+        margin-left: 15px;
+        background: rgba(255,255,255,0.2);
+        border: none;
+        color: white;
+        padding: 3px 10px;
+        border-radius: 3px;
+        cursor: pointer;
+        }
+
+        #bypass-indicator button:hover {
+        background: rgba(255,255,255,0.3);
         }
 
         /* Global Styles */

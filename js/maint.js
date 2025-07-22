@@ -1,83 +1,109 @@
-// js/maint.js - Version optimisée
+// js/maint.js
 const MAINTENANCE_API = 'https://vierund-maintenance.onrender.com/api/maintenance';
+const BYPASS_TOKEN = 'tt44315015'; // Doit correspondre à celui de l'API
 
 class MaintenanceSystem {
   constructor() {
-    this.lastStatus = { isActive: false };
     this.init();
   }
 
   async init() {
+    // Vérifie d'abord le bypass avant tout
+    if (this.checkBypass()) {
+      this.showBypassIndicator();
+      return; // Ne pas activer la maintenance si bypass est actif
+    }
+    
     await this.checkStatus();
-    this.setupListeners();
-    this.startPolling(300000); // Vérifie toutes les 5 minutes
+    this.startPolling(300000);
+  }
+
+  checkBypass() {
+    // Vérifie dans l'URL
+    const urlParams = new URLSearchParams(window.location.search);
+    const bypassToken = urlParams.get('bypass');
+    
+    // Vérifie dans le localStorage
+    const storedToken = localStorage.getItem('maintenance_bypass');
+    
+    // Si token valide dans l'URL, le stocker pour les visites suivantes
+    if (bypassToken === BYPASS_TOKEN) {
+      localStorage.setItem('maintenance_bypass', BYPASS_TOKEN);
+      return true;
+    }
+    
+    // Vérifier le token stocké
+    return storedToken === BYPASS_TOKEN;
+  }
+
+  showBypassIndicator() {
+    const indicator = document.createElement('div');
+    indicator.id = 'bypass-indicator';
+    indicator.innerHTML = `
+      <div class="bypass-banner">
+        Mode admin actif - Maintenance bypassée
+        <button id="disable-bypass">Désactiver</button>
+      </div>
+    `;
+    document.body.appendChild(indicator);
+    
+    document.getElementById('disable-bypass').addEventListener('click', () => {
+      localStorage.removeItem('maintenance_bypass');
+      window.location.search = '';
+    });
   }
 
   async checkStatus() {
     try {
       const response = await fetch(MAINTENANCE_API, {
-        method: 'GET',
-        headers: { 'Accept': 'application/json' },
-        cache: 'no-store'
+        headers: {
+          'X-Bypass-Token': localStorage.getItem('maintenance_bypass') || ''
+        }
       });
-
-      // Gestion spéciale du statut 503
-      if (response.status === 503) {
-        const data = await response.json().catch(() => ({
-          isActive: true,
-          message: "Maintenance planifiée en cours"
-        }));
-        this.activate(data.message);
-        return;
-      }
-
-      if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
       
       const data = await response.json();
-      this.lastStatus = data;
-      data.isActive ? this.activate(data.message) : this.deactivate();
-      
+      data.isActive ? this.showMaintenancePage(data.message) : this.hideMaintenancePage();
     } catch (error) {
       console.error('Maintenance check failed:', error);
-      // En cas d'erreur, conserve le dernier statut connu
-      this.lastStatus.isActive ? this.activate(this.lastStatus.message) : this.deactivate();
+      this.hideMaintenancePage();
     }
   }
 
-  activate(message = 'Maintenance en cours...') {
-    if (document.body.classList.contains('maintenance-mode')) return;
+  showMaintenancePage(message) {
+    // Ne rien faire si la page de maintenance est déjà affichée
+    if (document.getElementById('full-maintenance-page')) return;
     
-    document.body.classList.add('maintenance-mode');
-    
-    // Crée ou met à jour la bannière
-    let banner = document.getElementById('maintenance-banner');
-    if (!banner) {
-      banner = document.createElement('div');
-      banner.id = 'maintenance-banner';
-      banner.className = 'maintenance-banner';
-      document.body.prepend(banner);
-    }
-    banner.innerHTML = `
-      <div class="maintenance-content">
-        ⚠️ ${message}
+    // Créer la page de maintenance complète
+    const maintenancePage = document.createElement('div');
+    maintenancePage.id = 'full-maintenance-page';
+    maintenancePage.innerHTML = `
+      <div class="maintenance-container">
+        <div class="maintenance-content">
+          <h1>🛠 Maintenance en cours</h1>
+          <p class="maintenance-message">${message}</p>
+          <div class="maintenance-details">
+            <p>Nous effectuons des travaux de maintenance pour améliorer notre service.</p>
+            <p>Veuillez nous excuser pour la gêne occasionnée.</p>
+          </div>
+          <div class="maintenance-footer">
+            <p>Contact d'urgence : <a href="mailto:contact@vierund.com">contact@vierund.com</a></p>
+          </div>
+        </div>
       </div>
     `;
+    
+    // Masquer le contenu original
+    document.body.style.overflow = 'hidden';
+    document.body.innerHTML = '';
+    document.body.appendChild(maintenancePage);
   }
 
-  deactivate() {
-    document.body.classList.remove('maintenance-mode');
-    const banner = document.getElementById('maintenance-banner');
-    if (banner) banner.remove();
-  }
-
-  setupListeners() {
-    // Bloque les formulaires en maintenance
-    document.addEventListener('submit', (e) => {
-      if (this.lastStatus.isActive) {
-        e.preventDefault();
-        alert(`Service indisponible : ${this.lastStatus.message}`);
-      }
-    });
+  hideMaintenancePage() {
+    const maintenancePage = document.getElementById('full-maintenance-page');
+    if (maintenancePage) {
+      // Recharger la page pour restaurer le contenu original
+      window.location.reload();
+    }
   }
 
   startPolling(interval) {
