@@ -79,14 +79,14 @@ class MaintenanceSystem {
     maintenancePage.innerHTML = `
       <div class="maintenance-container">
         <div class="maintenance-content">
-          <h1>🛠 Maintenance en cours</h1>
+          <h1>🛠 Maintenance </h1>
           <p class="maintenance-message">${message}</p>
           <div class="maintenance-details">
-            <p>Nous effectuons des travaux de maintenance pour améliorer notre service.</p>
+            <p>Vieurnd Web v1.0.0</p>
             <p>Veuillez nous excuser pour la gêne occasionnée.</p>
           </div>
           <div class="maintenance-footer">
-            <p>Contact d'urgence : <a href="mailto:contact@vierund.com">contact@vierund.com</a></p>
+            <p>Contact d'urgence : <a href="mailto:contact.vierund@gmail.com">contact.vierund@gmail.com</a></p>
           </div>
         </div>
       </div>
