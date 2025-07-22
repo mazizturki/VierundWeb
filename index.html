@@ -1,0 +1,595 @@
+<!DOCTYPE html>
+<html lang="fr" data-bs-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vierund - Accueil</title>
+    <!-- Meta SEO -->
+    <meta name="description" content="Vierund - Solutions innovantes en Intelligence Artificielle, Data Science et Sécurité Informatique">
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@500;600&display=swap" rel="stylesheet">
+    <!-- Favicon -->
+    <link rel="icon" href="assets/img/logo.png" type="image/x-icon">
+    <!-- CSS Libraries -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
+    <link rel="stylesheet" href="https://unpkg.com/aos@next/dist/aos.css" />
+    <style>
+        :root {
+            --blue-night: #0A1128;
+            --blue-deep: #0A1A2F;
+            --cyan: #00F0FF;
+            --cyan-dark: #00B4D8;
+            --purple-accent: #7B2CBF;
+        }
+        
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: var(--blue-night);
+            color: #E2E8F0;
+            overflow-x: hidden;
+        }
+        
+        h1, h2, h3, .display-font {
+            font-family: 'Space Grotesk', sans-serif;
+            font-weight: 600;
+        }
+        
+        /* Navbar Glass Effect */
+        .navbar {
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            background: rgba(10, 17, 40, 0.86);
+            border-bottom: 1px solid rgba(0, 240, 255, 0.12);
+        }
+        
+        /* Hero Gradient */
+        .hero-gradient {
+            background: linear-gradient(135deg, var(--blue-night) 0%, var(--blue-deep) 100%);
+        }
+        
+        /* Animated Underline */
+        .underline-animation {
+            position: relative;
+            display: inline-block;
+        }
+        
+        .underline-animation::after {
+            content: '';
+            position: absolute;
+            width: 100%;
+            height: 3px;
+            bottom: -4px;
+            left: 0;
+            background: var(--cyan);
+            transform: scaleX(0);
+            transform-origin: bottom right;
+            transition: transform 0.4s cubic-bezier(0.86, 0, 0.07, 1);
+        }
+        
+        .underline-animation:hover::after {
+            transform: scaleX(1);
+            transform-origin: bottom left;
+        }
+        
+        /* Card Hover Effect */
+        .service-card {
+            transition: all 0.4s ease;
+            border: 1px solid rgba(0, 240, 255, 0.08);
+            background: rgba(10, 26, 47, 0.4);
+            overflow: hidden;
+        }
+        
+        .service-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 12px 24px rgba(0, 240, 255, 0.08);
+            border-color: rgba(0, 240, 255, 0.2);
+        }
+        
+        /* Glow Effect */
+        .glow-effect {
+            position: relative;
+        }
+        
+        .glow-effect::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: radial-gradient(circle at center, rgba(0, 240, 255, 0.12) 0%, transparent 70%);
+            z-index: -1;
+            opacity: 0;
+            transition: opacity 0.4s ease;
+        }
+        
+        .glow-effect:hover::before {
+            opacity: 1;
+        }
+        
+        /* Custom Button */
+        .btn-cyan {
+            background: linear-gradient(135deg, var(--cyan) 0%, var(--cyan-dark) 100%);
+            border: none;
+            color: #0A1128;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            position: relative;
+            overflow: hidden;
+            z-index: 1;
+        }
+        
+        .btn-cyan::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, var(--cyan-dark) 0%, var(--cyan) 100%);
+            z-index: -1;
+            opacity: 0;
+            transition: opacity 0.4s ease;
+        }
+        
+        .btn-cyan:hover::after {
+            opacity: 1;
+        }
+        
+        /* Contact Form */
+        .contact-form {
+            background: rgba(10, 26, 47, 0.6);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(0, 240, 255, 0.12);
+        }
+        
+        .form-control {
+            background: rgba(10, 17, 40, 0.4);
+            border: 1px solid rgba(0, 240, 255, 0.12);
+            color: white;
+            transition: all 0.3s ease;
+        }
+        
+        .form-control:focus {
+            background: rgba(10, 17, 40, 0.6);
+            border-color: var(--cyan);
+            box-shadow: 0 0 0 0.25rem rgba(0, 240, 255, 0.25);
+            color: white;
+        }
+        
+        /* Particles Background */
+        #particles-js {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            z-index: -1;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg py-3 fixed-top">
+        <div class="container">
+            <a class="navbar-brand d-flex align-items-center" href="#">
+                <img src="assets/img/logo.png" alt="" style="width: 15%; margin-right: 3%;">
+                <span class="display-font fs-4 fw-bold">Vieurnd</span>
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item mx-2">
+                        <a class="nav-link underline-animation" href="#services">Services</a>
+                    </li>
+                    <li class="nav-item mx-2">
+                        <a class="nav-link underline-animation" href="#expertise">Expertise</a>
+                    </li>
+                    <li class="nav-item mx-2">
+                        <a class="nav-link underline-animation" href="#contact">Contact</a>
+                    </li>
+                </ul>
+                <a href="#contact" class="btn btn-cyan ms-lg-3 px-4 py-2">Demander un devis</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero-gradient position-relative overflow-hidden" style="padding-top: 100px; min-height: 100vh;">
+        <div id="particles-js"></div>
+        <div class="container h-100">
+            <div class="row align-items-center h-100 py-5">
+                <div class="col-lg-7 py-5 my-lg-5">
+                    <h6 class="text-cyan fw-semibold mb-3 animate__animated animate__fadeInUp">Innovation Technologique</h6>
+                    <h1 class="display-3 fw-bold mb-4 animate__animated animate__fadeInUp" data-aos="fade-up" data-aos-delay="100">
+                        Solutions <span class="text-cyan">Digitales</span> pour Entreprises <span class="text-cyan">Visionnaires</span>
+                    </h1>
+                    <p class="lead mb-5 animate__animated animate__fadeInUp" data-aos="fade-up" data-aos-delay="200">
+                        Vierund transforme vos défis technologiques en avantages concurrentiels grâce à notre expertise en IA, Data Science et Cybersécurité.
+                    </p>
+                    <div class="d-flex gap-3 animate__animated animate__fadeInUp" data-aos="fade-up" data-aos-delay="300">
+                        <a href="#contact" class="btn btn-cyan btn-lg px-4 glow-effect">Démarrer un projet</a>
+                        <a href="#services" class="btn btn-outline-light btn-lg px-4">Nos services</a>
+                    </div>
+                </div>
+                <div class="col-lg-5 d-none d-lg-block">
+                    <div class="position-relative" data-aos="fade-left">
+                        <div class="position-absolute top-0 start-0 bg-cyan" style="width: 300px; height: 300px; border-radius: 50%; filter: blur(120px); opacity: 0.2;"></div>
+                        <img src="https://images.unsplash.com/photo-1620712943543-bcc4688e7485?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1200&q=80" alt="AI Technology" class="img-fluid rounded-4 shadow-lg" style="transform: perspective(1000px) rotateY(15deg);">
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Trusted By -->
+        <div class="container py-4 animate__animated animate__fadeIn" data-aos="fade-up">
+            <p class="text-center text-muted mb-3">Trusted by innovative companies worldwide</p>
+            <div class="d-flex flex-wrap justify-content-center align-items-center gap-5">
+                <img src="https://via.placeholder.com/120x40/0A1128/00F0FF?text=Microsoft" alt="" class="img-fluid" style="filter: brightness(0) invert(1); opacity: 0.7; height: 28px;">
+                <img src="https://via.placeholder.com/120x40/0A1128/00F0FF?text=IBM" alt="" class="img-fluid" style="filter: brightness(0) invert(1); opacity: 0.7; height: 28px;">
+                <img src="https://via.placeholder.com/120x40/0A1128/00F0FF?text=Oracle" alt="" class="img-fluid" style="filter: brightness(0) invert(1); opacity: 0.7; height: 28px;">
+                <img src="https://via.placeholder.com/120x40/0A1128/00F0FF?text=Amazon" alt="" class="img-fluid" style="filter: brightness(0) invert(1); opacity: 0.7; height: 28px;">
+            </div>
+        </div>
+    </section>
+
+    <!-- Services Section -->
+    <section id="services" class="py-5 my-5 position-relative">
+        <div class="container py-5">
+            <div class="row justify-content-center mb-5">
+                <div class="col-lg-8 text-center" data-aos="fade-up">
+                    <h6 class="text-cyan fw-semibold mb-3">NOS DOMAINES D'EXCELLENCE</h6>
+                    <h2 class="display-5 fw-bold mb-4">Services <span class="text-cyan">Haut de Gamme</span></h2>
+                    <p class="lead">Des solutions technologiques sur mesure pour propulser votre entreprise vers l'avenir.</p>
+                </div>
+            </div>
+            <div class="row g-4">
+                <div class="col-md-6 col-lg-3" data-aos="fade-up" data-aos-delay="100">
+                    <div class="service-card h-100 p-4 rounded-4">
+                        <div class="icon-wrapper bg-cyan bg-opacity-10 rounded-3 p-3 mb-4" style="width: 60px;">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-cloud text-cyan">
+                                <path d="M18 10h-1.26A8 8 0 1 0 9 20h9a5 5 0 0 0 0-10z"></path>
+                            </svg>
+                        </div>
+                        <h4 class="fw-bold mb-3">Cloud Computing</h4>
+                        <p class="text-muted">Infrastructures cloud sécurisées et optimisées pour une agilité maximale.</p>
+                        <a href="#" class="text-cyan text-decoration-none d-flex align-items-center mt-3">
+                            En savoir plus
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-right ms-2">
+                                <line x1="5" y1="12" x2="19" y2="12"></line>
+                                <polyline points="12 5 19 12 12 19"></polyline>
+                            </svg>
+                        </a>
+                    </div>
+                </div>
+                <div class="col-md-6 col-lg-3" data-aos="fade-up" data-aos-delay="200">
+                    <div class="service-card h-100 p-4 rounded-4">
+                        <div class="icon-wrapper bg-cyan bg-opacity-10 rounded-3 p-3 mb-4" style="width: 60px;">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-database text-cyan">
+                                <ellipse cx="12" cy="5" rx="9" ry="3"></ellipse>
+                                <path d="M21 12c0 1.66-4.03 3-9 3s-9-1.34-9-3"></path>
+                                <path d="M21 12c0 1.66-4.03 3-9 3s-9-1.34-9-3"></path>
+                                <path d="M21 12c0 1.66-4.03 3-9 3s-9-1.34-9-3"></path>
+                            </svg>
+                        </div>
+                        <h4 class="fw-bold mb-3">Data Science</h4>
+                        <p class="text-muted">Analyse avancée des données pour des insights stratégiques et une prise de décision éclairée.</p>
+                        <a href="#" class="text-cyan text-decoration-none d-flex align-items-center mt-3">
+                            En savoir plus
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-right ms-2">
+                                <line x1="5" y1="12" x2="19" y2="12"></line>
+                                <polyline points="12 5 19 12 12 19"></polyline>
+                            </svg>
+                        </a>
+                    </div>
+                </div>
+                <div class="col-md-6 col-lg-3" data-aos="fade-up" data-aos-delay="300">
+                    <div class="service-card h-100 p-4 rounded-4">
+                        <div class="icon-wrapper bg-cyan bg-opacity-10 rounded-3 p-3 mb-4" style="width: 60px;">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-shield text-cyan">
+                                <path d="M12 2C6.48 2 2 6.48 2 12c0 5.52 4.48 10 10 10s10-4.48 10-10c0-5.52-4.48-10-10-10z"></path>
+                                <path d="M12 22V12l8-4v8c0 1.1-.9 2-2 2H14c-.55 0-1-.45-1-1z"></path>
+                            </svg>
+                        </div>
+                        <h4 class="fw-bold mb-3">Cybersécurité</h4>
+                        <p class="text-muted">Protection avancée contre les menaces informatiques avec des solutions de sécurité sur mesure.</p>
+                        <a href="#" class="text-cyan text-decoration-none d-flex align-items-center mt-3">
+                            En savoir plus
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-right ms-2">
+                                <line x1="5" y1="12" x2="19" y2="12"></line>
+                                <polyline points="12 5 19 12 12 19"></polyline>
+                            </svg>
+                        </a>
+                    </div>
+                </div>
+                <div class="col-md-6 col-lg-3" data-aos="fade-up" data-aos-delay="400">
+                    <div class="service-card h-100 p-4 rounded-4">
+                        <div class="icon-wrapper bg-cyan bg-opacity-10 rounded-3 p-3 mb-4" style="width: 60px;">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-code text-cyan">
+                                <polyline points="16 18 22 12 16 6"></polyline>
+                                <line x1="2" y1="12" x2="22"></line>
+                                <polyline points="8 6 2 12 8 18"></polyline>
+                            </svg>
+                        </div>
+                        <h4 class="fw-bold mb-3">Développement Web</h4>
+                        <p class="text-muted">Création de sites web et applications web performants, sécurisés et adaptés à vos besoins.</p>
+                        <a href="#" class="text-cyan text-decoration-none d-flex align-items-center mt-3">
+                            En savoir plus
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-right ms-2">
+                                <line x1="5" y1="12" x2="19" y2="12"></line>
+                                <polyline points="12 5 19 12 12 19"></polyline>
+                            </svg>
+                        </a>
+                    </div>
+                </div>
+                <div class="col-md-6 col-lg-3" data-aos="fade-up" data-aos-delay="500">
+                    <div class="service-card h-100 p-4 rounded-4">
+                        <div class="icon-wrapper bg-cyan bg-opacity-10 rounded-3 p-3 mb-4" style="width: 60px;">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-layers text-cyan">
+                                <polygon points="12 2 2 7 12 12 22 7 12 2"></polygon>
+                                <polyline points="2 17 12 22 22 17"></polyline>
+                                <polyline points="2 12 12 17 22 12"></polyline>
+                            </svg>
+                        </div>
+                        <h4 class="fw-bold mb-3">Intégration Systèmes</h4>
+                        <p class="text-muted">Solutions d'intégration pour optimiser vos processus métiers et améliorer l'efficacité opérationnelle.</p>
+                        <a href="#" class="text-cyan text-decoration-none d-flex align-items-center mt-3">
+                            En savoir plus
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-right ms-2">
+                                <line x1="5" y1="12" x2="19" y2="12"></line>
+                                <polyline points="12 5 19 12 12 19"></polyline>
+                            </svg>
+                        </a>
+                    </div>
+                </div>
+                <!-- Repeat for other services (Data Science, Cybersecurity, Web Dev) -->
+                <!-- Add similar cards for other services -->
+                
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section id="contact" class="py-5 my-5">
+        <div class="container py-5">
+            <div class="row justify-content-center">
+                <div class="col-lg-10">
+                    <div class="contact-form rounded-4 p-4 p-md-5" data-aos="fade-up">
+                        <div class="row align-items-center">
+                            <div class="col-lg-6 mb-5 mb-lg-0">
+                                <h2 class="display-5 fw-bold mb-4">Prêt à <span class="text-cyan">transformer</span> votre entreprise ?</h2>
+                                <p class="lead mb-4">Notre équipe d'experts est à votre écoute pour discuter de vos besoins spécifiques.</p>
+                                <div class="d-flex align-items-center mb-4">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-mail text-cyan me-3">
+                                        <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
+                                        <polyline points="22,6 12,13 2,6"></polyline>
+                                    </svg>
+                                    <span>contact.vierund@gmail.com</span>
+                                </div>
+                                <div class="d-flex align-items-center">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-phone text-cyan me-3">
+                                        <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path>
+                                    </svg>
+                                    <span>+216 55 31 03 64</span>
+                                </div>
+                            </div>
+                            <div class="col-lg-6">
+                                <form id="contactForm" class="needs-validation" novalidate>
+                                    <div class="mb-4">
+                                        <input type="text" class="form-control form-control-lg py-3" id="name" placeholder="Votre nom" required>
+                                    </div>
+                                    <div class="mb-4">
+                                        <input type="email" class="form-control form-control-lg py-3" id="email" placeholder="Votre email" required>
+                                    </div>
+                                    <div class="mb-4">
+                                        <select class="form-select form-select-lg py-3" id="service" required>
+                                            <option value="" selected disabled>Service intéressé</option>
+                                            <option value="cloud">Cloud Computing</option>
+                                            <option value="data">Data Science</option>
+                                            <option value="cyber">Cybersécurité</option>
+                                            <option value="web">Développement Web</option>
+                                        </select>
+                                    </div>
+                                    <div class="mb-4">
+                                        <textarea class="form-control form-control-lg py-3" id="message" rows="3" placeholder="Votre message" required></textarea>
+                                    </div>
+                                    <button type="submit" class="btn btn-cyan w-100 py-3 fw-bold">
+                                        Envoyer le message
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-black py-5">
+        <div class="container py-4">
+            <div class="row">
+                <div class="col-lg-4 mb-5 mb-lg-0">
+                    <a class="d-flex align-items-center mb-4 text-decoration-none" href="#">
+                        <img src="assets/img/logo.png" alt="Vierund Logo" style="width: 15%; margin-right: 3%;">
+                        <span class="display-font fs-4 fw-bold">Vieurnd</span>
+                    </a>
+                    <p class="text-muted">L'excellence technologique au service de votre croissance.</p>
+                    <div class="d-flex gap-3 mt-4">
+                        <a href="#" class="text-muted hover-text-cyan">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-twitter">
+                                <path d="M23 3a10.9 10.9 0 0 1-3.14 1.53 4.48 4.48 0 0 0-7.86 3v1A10.66 10.66 0 0 1 3 4s-4 9 5 13a11.64 11.64 0 0 1-7 2c9 5 20 0 20-11.5a4.5 4.5 0 0 0-.08-.83A7.72 7.72 0 0 0 23 3z"></path>
+                            </svg>
+                        </a>
+                        <a href="#" class="text-muted hover-text-cyan">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-linkedin">
+                                <path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"></path>
+                                <rect x="2" y="9" width="4" height="12"></rect>
+                                <circle cx="4" cy="4" r="2"></circle>
+                            </svg>
+                        </a>
+                        <a href="#" class="text-muted hover-text-cyan">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-github">
+                                <path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"></path>
+                            </svg>
+                        </a>
+                    </div>
+                </div>
+                <div class="col-6 col-md-3 col-lg-2 mb-4 mb-md-0">
+                    <h5 class="text-uppercase fw-bold mb-4">Services</h5>
+                    <ul class="list-unstyled">
+                        <li class="mb-2"><a href="#" class="text-muted text-decoration-none hover-text-cyan">Cloud Computing</a></li>
+                        <li class="mb-2"><a href="#" class="text-muted text-decoration-none hover-text-cyan">Data Science</a></li>
+                        <li class="mb-2"><a href="#" class="text-muted text-decoration-none hover-text-cyan">Cybersécurité</a></li>
+                        <li class="mb-2"><a href="#" class="text-muted text-decoration-none hover-text-cyan">Développement Web</a></li>
+                    </ul>
+                </div>
+                <div class="col-6 col-md-3 col-lg-2 mb-4 mb-md-0">
+                    <h5 class="text-uppercase fw-bold mb-4">Entreprise</h5>
+                    <ul class="list-unstyled">
+                        <li class="mb-2"><a href="#" class="text-muted text-decoration-none hover-text-cyan">À propos</a></li>
+                        <li class="mb-2"><a href="#" class="text-muted text-decoration-none hover-text-cyan">Carrières</a></li>
+                        <li class="mb-2"><a href="#" class="text-muted text-decoration-none hover-text-cyan">Blog</a></li>
+                        <li class="mb-2"><a href="#" class="text-muted text-decoration-none hover-text-cyan">Contact</a></li>
+                    </ul>
+                </div>
+                <div class="col-md-6 col-lg-4">
+                    <h5 class="text-uppercase fw-bold mb-4">Newsletter</h5>
+                    <p class="text-muted mb-4">Abonnez-vous pour recevoir nos dernières actualités.</p>
+                    <div class="input-group mb-3">
+                        <input type="email" class="form-control bg-dark border-dark text-white" placeholder="Votre email">
+                        <button class="btn btn-cyan" type="button">S'abonner</button>
+                    </div>
+                </div>
+            </div>
+            <hr class="my-5 border-dark">
+            <div class="row">
+                <div class="col-md-6 text-center text-md-start">
+                    <p class="small text-muted mb-0">© 2025 Vierund. Tous droits réservés.</p>
+                </div>
+                <div class="col-md-6 text-center text-md-end">
+                    <p class="small text-muted mb-0">
+                        <a href="#" class="text-decoration-none text-muted hover-text-cyan">Mentions légales</a> | 
+                        <a href="#" class="text-decoration-none text-muted hover-text-cyan">Politique de confidentialité</a>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://unpkg.com/aos@next/dist/aos.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/particles.js@2.0.0/particles.min.js"></script>
+    <script>
+        // Initialize AOS (Animate On Scroll)
+        AOS.init({
+            duration: 800,
+            easing: 'ease-in-out',
+            once: true
+        });
+        
+        // Initialize Particles.js
+        document.addEventListener('DOMContentLoaded', function() {
+            if (document.getElementById('particles-js')) {
+                particlesJS('particles-js', {
+                    "particles": {
+                        "number": {
+                            "value": 80,
+                            "density": {
+                                "enable": true,
+                                "value_area": 800
+                            }
+                        },
+                        "color": {
+                            "value": "#00F0FF"
+                        },
+                        "shape": {
+                            "type": "circle",
+                            "stroke": {
+                                "width": 0,
+                                "color": "#000000"
+                            }
+                        },
+                        "opacity": {
+                            "value": 0.3,
+                            "random": true,
+                            "anim": {
+                                "enable": true,
+                                "speed": 1,
+                                "opacity_min": 0.1,
+                                "sync": false
+                            }
+                        },
+                        "size": {
+                            "value": 3,
+                            "random": true
+                        },
+                        "line_linked": {
+                            "enable": true,
+                            "distance": 150,
+                            "color": "#00F0FF",
+                            "opacity": 0.2,
+                            "width": 1
+                        },
+                        "move": {
+                            "enable": true,
+                            "speed": 1,
+                            "direction": "none",
+                            "random": true,
+                            "straight": false,
+                            "out_mode": "out",
+                            "bounce": false,
+                            "attract": {
+                                "enable": false,
+                                "rotateX": 600,
+                                "rotateY": 1200
+                            }
+                        }
+                    },
+                    "interactivity": {
+                        "detect_on": "canvas",
+                        "events": {
+                            "onhover": {
+                                "enable": true,
+                                "mode": "grab"
+                            },
+                            "onclick": {
+                                "enable": true,
+                                "mode": "push"
+                            },
+                            "resize": true
+                        },
+                        "modes": {
+                            "grab": {
+                                "distance": 140,
+                                "line_linked": {
+                                    "opacity": 0.5
+                                }
+                            },
+                            "push": {
+                                "particles_nb": 4
+                            }
+                        }
+                    },
+                    "retina_detect": true
+                });
+            }
+            
+            // Form validation
+            const form = document.getElementById('contactForm');
+            form.addEventListener('submit', function(event) {
+                if (!form.checkValidity()) {
+                    event.preventDefault();
+                    event.stopPropagation();
+                }
+                form.classList.add('was-validated');
+            }, false);
+        });
+    </script>
+</body>
+</html>
