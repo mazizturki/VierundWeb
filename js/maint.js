@@ -1,25 +1,24 @@
-// js/maint.js - Version optimisée
 const MAINTENANCE_API = 'https://vierund-maintenance.onrender.com/api/maintenance';
 
 class MaintenanceSystem {
   constructor() {
     this.init();
-    this.retryCount = 0;
-    this.maxRetries = 3;
   }
 
   async init() {
     await this.checkStatus();
     this.setupListeners();
-    this.startPolling(300000); // Vérifie toutes les 5 minutes
+    this.startPolling(300000); // 5 minutes
   }
 
   async checkStatus() {
     try {
       const response = await fetch(MAINTENANCE_API, {
         method: 'GET',
+        mode: 'cors',
+        credentials: 'same-origin',
         headers: {
-          'Cache-Control': 'no-cache',
+          'Content-Type': 'application/json',
           'Accept': 'application/json'
         }
       });
@@ -28,16 +27,10 @@ class MaintenanceSystem {
       
       const { isActive, message } = await response.json();
       isActive ? this.activate(message) : this.deactivate();
-      this.retryCount = 0; // Reset retry counter on success
       
     } catch (error) {
       console.error('Maintenance check failed:', error);
-      if (this.retryCount < this.maxRetries) {
-        this.retryCount++;
-        setTimeout(() => this.checkStatus(), 5000 * this.retryCount); // Retry with backoff
-      } else {
-        this.deactivate(); // Fallback to normal mode
-      }
+      this.deactivate(); // Fallback to normal mode
     }
   }
 
