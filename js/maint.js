@@ -1,69 +1,72 @@
-  const MAINTENANCE_API_URL = 'https://vierund-maintenance.onrender.com/api/maintenance';
-  
-  // Fonction pour activer le mode maintenance
-  function enableMaintenanceMode(message) {
-    document.body.classList.add('maintenance-mode');
-    
-    // Créer ou mettre à jour la bannière de maintenance
-    let alertDiv = document.getElementById('maintenance-alert');
-    if (!alertDiv) {
-      alertDiv = document.createElement('div');
-      alertDiv.id = 'maintenance-alert';
-      alertDiv.className = 'alert alert-danger text-center py-3 mb-0 rounded-0 position-fixed bottom-0 start-0 end-0';
-      alertDiv.style.zIndex = '1000';
-      alertDiv.innerHTML = `
-        <strong>⚠️ Maintenance en cours :</strong> ${message || 'Le site est actuellement en maintenance. Nous serons de retour rapidement.'}
-      `;
-      document.body.appendChild(alertDiv);
-    } else {
-      alertDiv.innerHTML = `
-        <strong>⚠️ Maintenance en cours :</strong> ${message || 'Le site est actuellement en maintenance. Nous serons de retour rapidement.'}
-      `;
-    }
+// js/maintenance.js
+const MAINTENANCE_API_URL = 'https://vierund-maintenance.onrender.com/api/maintenance';
+
+async function checkMaintenance() {
+  try {
+    const response = await fetch(MAINTENANCE_API_URL);
+    if (!response.ok) throw new Error('Erreur réseau');
+    return await response.json();
+  } catch (error) {
+    console.error('Erreur API Maintenance:', error);
+    return { isActive: false }; // Mode normal si l'API échoue
   }
-  
-  // Fonction pour désactiver le mode maintenance
-  function disableMaintenanceMode() {
-    document.body.classList.remove('maintenance-mode');
-    const alertDiv = document.getElementById('maintenance-alert');
-    if (alertDiv) {
-      alertDiv.remove();
-    }
+}
+
+function showMaintenanceBanner(message) {
+  // Crée la bannière si elle n'existe pas
+  let banner = document.getElementById('maintenance-banner');
+  if (!banner) {
+    banner = document.createElement('div');
+    banner.id = 'maintenance-banner';
+    banner.className = 'maintenance-banner';
+    banner.innerHTML = `
+      <div class="maintenance-content">
+        <span class="maintenance-icon">⚠️</span>
+        <span class="maintenance-text">${message}</span>
+      </div>
+    `;
+    document.body.prepend(banner);
   }
+}
+
+function enableMaintenanceMode(message) {
+  document.body.classList.add('maintenance-mode');
+  showMaintenanceBanner(message || 'Maintenance en cours...');
+}
+
+function disableMaintenanceMode() {
+  document.body.classList.remove('maintenance-mode');
+  const banner = document.getElementById('maintenance-banner');
+  if (banner) banner.remove();
+}
+
+// Vérifie l'état toutes les 5 minutes (optionnel)
+async function initMaintenanceCheck() {
+  const { isActive, message } = await checkMaintenance();
+  isActive ? enableMaintenanceMode(message) : disableMaintenanceMode();
   
-  // Vérifier l'état de maintenance au chargement
-  document.addEventListener('DOMContentLoaded', async () => {
-    try {
-      const response = await fetch(MAINTENANCE_API_URL);
-      const data = await response.json();
-      
-      if (data.isActive) {
-        enableMaintenanceMode(data.message);
-      } else {
-        disableMaintenanceMode();
-      }
-    } catch (error) {
-      console.error('Erreur lors de la vérification du mode maintenance:', error);
-      // En cas d'erreur, on ne bloque pas le site
-      disableMaintenanceMode();
-    }
-  });
-  
-  // Intercepter les soumissions de formulaire
-  document.getElementById('contactForm')?.addEventListener('submit', async (e) => {
-    try {
-      const maintenanceStatus = await fetch(MAINTENANCE_API_URL)
-        .then(res => res.json())
-        .catch(() => ({ isActive: false }));
-      
-      if (maintenanceStatus.isActive) {
+  // Vérification périodique (optionnel)
+  setInterval(async () => {
+    const status = await checkMaintenance();
+    status.isActive ? enableMaintenanceMode(status.message) : disableMaintenanceMode();
+  }, 300000); // 5 minutes
+}
+
+// Bloque les formulaires en maintenance
+function handleForms() {
+  document.querySelectorAll('form').forEach(form => {
+    form.addEventListener('submit', async (e) => {
+      const { isActive, message } = await checkMaintenance();
+      if (isActive) {
         e.preventDefault();
-        alert(`Désolé, le formulaire est temporairement indisponible en raison d'une maintenance.\n\n${maintenanceStatus.message}`);
+        alert(`Service indisponible : ${message}`);
       }
-    } catch (error) {
-      console.error('Erreur lors de la vérification du mode maintenance:', error);
-      // En cas d'erreur, on laisse le formulaire se soumettre
-    }
+    });
   });
-// js/script.js
-  // URL de l'API de maintenance
+}
+
+// Initialisation
+document.addEventListener('DOMContentLoaded', () => {
+  initMaintenanceCheck();
+  handleForms();
+});
