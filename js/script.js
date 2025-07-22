@@ -1,77 +1,104 @@
-  // Config
-  const MAINTENANCE_API_URL = 'https://vierund-maintenance.onrender.com/api/maintenance';
-  const BYPASS_TOKEN = 'tt44315015'; // À stocker côté serveur en prod
-
-  // Éléments UI
-  const maintenanceBanner = document.createElement('div');
-  maintenanceBanner.id = 'maintenance-alert';
-  maintenanceBanner.style.cssText = `
-    position: fixed;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    background: rgba(220, 38, 38, 0.95);
-    color: white;
-    padding: 12px 0;
-    z-index: 1000;
-    backdrop-filter: blur(8px);
-    transform: translateY(100%);
-    transition: transform 0.4s cubic-bezier(0.68, -0.55, 0.27, 1.55);
-  `;
-
-  // Structure du bandeau
-  maintenanceBanner.innerHTML = `
-    <div class="container">
-      <div class="d-flex justify-content-between align-items-center">
-        <div class="d-flex align-items-center">
-          <svg class="me-3" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" style="flex-shrink: 0;">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
-          </svg>
-          <span id="maintenance-message">Maintenance en cours</span>
-        </div>
-        <small id="maintenance-time" class="text-white-50"></small>
-      </div>
-    </div>
-  `;
-
-  document.body.appendChild(maintenanceBanner);
-
-  // Vérification périodique
-  function checkMaintenanceStatus() {
-    fetch(MAINTENANCE_API_URL, {
-      headers: { 'x-bypass-token': BYPASS_TOKEN }
-    })
-      .then(response => response.json())
-      .then(data => {
-        const alertElement = document.getElementById('maintenance-alert');
-        const messageElement = document.getElementById('maintenance-message');
-        const timeElement = document.getElementById('maintenance-time');
-
-        if (data.isActive) {
-          messageElement.textContent = data.message || "Maintenance en cours - Merci de votre patience";
-          timeElement.textContent = new Date().toLocaleTimeString();
-          alertElement.style.transform = 'translateY(0)';
-          
-          // Pulse animation
-          alertElement.style.animation = 'pulse 2s infinite';
-          document.head.insertAdjacentHTML('beforeend', `
-            <style>
-              @keyframes pulse {
-                0% { opacity: 0.95; }
-                50% { opacity: 0.8; }
-                100% { opacity: 0.95; }
-              }
-            </style>
-          `);
-        } else {
-          alertElement.style.transform = 'translateY(100%)';
-        }
-      })
-      .catch(error => {
-        console.error("Erreur API maintenance:", error);
-      });
-  }
-
-  // Vérification initiale + toutes les 5 minutes
-  checkMaintenanceStatus();
-  setInterval(checkMaintenanceStatus, 300000);
+        // Initialize AOS (Animate On Scroll)
+        AOS.init({
+            duration: 800,
+            easing: 'ease-in-out',
+            once: true
+        });
+        
+        // Initialize Particles.js
+        document.addEventListener('DOMContentLoaded', function() {
+            if (document.getElementById('particles-js')) {
+                particlesJS('particles-js', {
+                    "particles": {
+                        "number": {
+                            "value": 80,
+                            "density": {
+                                "enable": true,
+                                "value_area": 800
+                            }
+                        },
+                        "color": {
+                            "value": "#00F0FF"
+                        },
+                        "shape": {
+                            "type": "circle",
+                            "stroke": {
+                                "width": 0,
+                                "color": "#000000"
+                            }
+                        },
+                        "opacity": {
+                            "value": 0.3,
+                            "random": true,
+                            "anim": {
+                                "enable": true,
+                                "speed": 1,
+                                "opacity_min": 0.1,
+                                "sync": false
+                            }
+                        },
+                        "size": {
+                            "value": 3,
+                            "random": true
+                        },
+                        "line_linked": {
+                            "enable": true,
+                            "distance": 150,
+                            "color": "#00F0FF",
+                            "opacity": 0.2,
+                            "width": 1
+                        },
+                        "move": {
+                            "enable": true,
+                            "speed": 1,
+                            "direction": "none",
+                            "random": true,
+                            "straight": false,
+                            "out_mode": "out",
+                            "bounce": false,
+                            "attract": {
+                                "enable": false,
+                                "rotateX": 600,
+                                "rotateY": 1200
+                            }
+                        }
+                    },
+                    "interactivity": {
+                        "detect_on": "canvas",
+                        "events": {
+                            "onhover": {
+                                "enable": true,
+                                "mode": "grab"
+                            },
+                            "onclick": {
+                                "enable": true,
+                                "mode": "push"
+                            },
+                            "resize": true
+                        },
+                        "modes": {
+                            "grab": {
+                                "distance": 140,
+                                "line_linked": {
+                                    "opacity": 0.5
+                                }
+                            },
+                            "push": {
+                                "particles_nb": 4
+                            }
+                        }
+                    },
+                    "retina_detect": true
+                });
+            }
+            
+            // Form validation
+            const form = document.getElementById('contactForm');
+            form.addEventListener('submit', function(event) {
+                if (!form.checkValidity()) {
+                    event.preventDefault();
+                    event.stopPropagation();
+                }
+                form.classList.add('was-validated');
+            }, false);
+        });
