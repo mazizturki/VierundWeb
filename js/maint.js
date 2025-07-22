@@ -1,36 +1,46 @@
+// js/maint.js - Version optimisée
 const MAINTENANCE_API = 'https://vierund-maintenance.onrender.com/api/maintenance';
 
 class MaintenanceSystem {
   constructor() {
+    this.lastStatus = { isActive: false };
     this.init();
   }
 
   async init() {
     await this.checkStatus();
     this.setupListeners();
-    this.startPolling(300000); // 5 minutes
+    this.startPolling(300000); // Vérifie toutes les 5 minutes
   }
 
   async checkStatus() {
     try {
       const response = await fetch(MAINTENANCE_API, {
         method: 'GET',
-        mode: 'cors',
-        credentials: 'same-origin',
-        headers: {
-          'Content-Type': 'application/json',
-          'Accept': 'application/json'
-        }
+        headers: { 'Accept': 'application/json' },
+        cache: 'no-store'
       });
+
+      // Gestion spéciale du statut 503
+      if (response.status === 503) {
+        const data = await response.json().catch(() => ({
+          isActive: true,
+          message: "Maintenance planifiée en cours"
+        }));
+        this.activate(data.message);
+        return;
+      }
 
       if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
       
-      const { isActive, message } = await response.json();
-      isActive ? this.activate(message) : this.deactivate();
+      const data = await response.json();
+      this.lastStatus = data;
+      data.isActive ? this.activate(data.message) : this.deactivate();
       
     } catch (error) {
       console.error('Maintenance check failed:', error);
-      this.deactivate(); // Fallback to normal mode
+      // En cas d'erreur, conserve le dernier statut connu
+      this.lastStatus.isActive ? this.activate(this.lastStatus.message) : this.deactivate();
     }
   }
 
@@ -39,19 +49,19 @@ class MaintenanceSystem {
     
     document.body.classList.add('maintenance-mode');
     
-    // Create banner if not exists
-    if (!document.getElementById('maintenance-banner')) {
-      const banner = document.createElement('div');
+    // Crée ou met à jour la bannière
+    let banner = document.getElementById('maintenance-banner');
+    if (!banner) {
+      banner = document.createElement('div');
       banner.id = 'maintenance-banner';
       banner.className = 'maintenance-banner';
-      banner.innerHTML = `
-        <div class="maintenance-content">
-          <span class="maintenance-icon">⚠️</span>
-          <span class="maintenance-message">${message}</span>
-        </div>
-      `;
       document.body.prepend(banner);
     }
+    banner.innerHTML = `
+      <div class="maintenance-content">
+        ⚠️ ${message}
+      </div>
+    `;
   }
 
   deactivate() {
@@ -61,38 +71,19 @@ class MaintenanceSystem {
   }
 
   setupListeners() {
-    // Block form submissions
-    document.addEventListener('submit', async (e) => {
-      if (document.body.classList.contains('maintenance-mode')) {
+    // Bloque les formulaires en maintenance
+    document.addEventListener('submit', (e) => {
+      if (this.lastStatus.isActive) {
         e.preventDefault();
-        const { message } = await this.getCurrentStatus();
-        alert(`Service indisponible : ${message || 'Maintenance en cours'}`);
+        alert(`Service indisponible : ${this.lastStatus.message}`);
       }
     });
-
-    // Optional: Add bypass for testing
-    if (window.location.search.includes('maintenance_bypass')) {
-      document.body.classList.add('maintenance-bypass');
-    }
   }
 
   startPolling(interval) {
     setInterval(() => this.checkStatus(), interval);
   }
-
-  async getCurrentStatus() {
-    try {
-      const response = await fetch(MAINTENANCE_API);
-      return await response.json();
-    } catch {
-      return { isActive: false };
-    }
-  }
 }
 
-// Initialize
-if (document.readyState === 'loading') {
-  document.addEventListener('DOMContentLoaded', () => new MaintenanceSystem());
-} else {
-  new MaintenanceSystem();
-}
+// Initialisation
+document.addEventListener('DOMContentLoaded', () => new MaintenanceSystem());
