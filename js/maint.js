@@ -1,72 +1,105 @@
-// js/maintenance.js
-const MAINTENANCE_API_URL = 'https://vierund-maintenance.onrender.com/api/maintenance';
+// js/maint.js - Version optimisée
+const MAINTENANCE_API = 'https://vierund-maintenance.onrender.com/api/maintenance';
 
-async function checkMaintenance() {
-  try {
-    const response = await fetch(MAINTENANCE_API_URL);
-    if (!response.ok) throw new Error('Erreur réseau');
-    return await response.json();
-  } catch (error) {
-    console.error('Erreur API Maintenance:', error);
-    return { isActive: false }; // Mode normal si l'API échoue
+class MaintenanceSystem {
+  constructor() {
+    this.init();
+    this.retryCount = 0;
+    this.maxRetries = 3;
   }
-}
 
-function showMaintenanceBanner(message) {
-  // Crée la bannière si elle n'existe pas
-  let banner = document.getElementById('maintenance-banner');
-  if (!banner) {
-    banner = document.createElement('div');
-    banner.id = 'maintenance-banner';
-    banner.className = 'maintenance-banner';
-    banner.innerHTML = `
-      <div class="maintenance-content">
-        <span class="maintenance-icon">⚠️</span>
-        <span class="maintenance-text">${message}</span>
-      </div>
-    `;
-    document.body.prepend(banner);
+  async init() {
+    await this.checkStatus();
+    this.setupListeners();
+    this.startPolling(300000); // Vérifie toutes les 5 minutes
   }
-}
 
-function enableMaintenanceMode(message) {
-  document.body.classList.add('maintenance-mode');
-  showMaintenanceBanner(message || 'Maintenance en cours...');
-}
+  async checkStatus() {
+    try {
+      const response = await fetch(MAINTENANCE_API, {
+        method: 'GET',
+        headers: {
+          'Cache-Control': 'no-cache',
+          'Accept': 'application/json'
+        }
+      });
 
-function disableMaintenanceMode() {
-  document.body.classList.remove('maintenance-mode');
-  const banner = document.getElementById('maintenance-banner');
-  if (banner) banner.remove();
-}
+      if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+      
+      const { isActive, message } = await response.json();
+      isActive ? this.activate(message) : this.deactivate();
+      this.retryCount = 0; // Reset retry counter on success
+      
+    } catch (error) {
+      console.error('Maintenance check failed:', error);
+      if (this.retryCount < this.maxRetries) {
+        this.retryCount++;
+        setTimeout(() => this.checkStatus(), 5000 * this.retryCount); // Retry with backoff
+      } else {
+        this.deactivate(); // Fallback to normal mode
+      }
+    }
+  }
 
-// Vérifie l'état toutes les 5 minutes (optionnel)
-async function initMaintenanceCheck() {
-  const { isActive, message } = await checkMaintenance();
-  isActive ? enableMaintenanceMode(message) : disableMaintenanceMode();
-  
-  // Vérification périodique (optionnel)
-  setInterval(async () => {
-    const status = await checkMaintenance();
-    status.isActive ? enableMaintenanceMode(status.message) : disableMaintenanceMode();
-  }, 300000); // 5 minutes
-}
+  activate(message = 'Maintenance en cours...') {
+    if (document.body.classList.contains('maintenance-mode')) return;
+    
+    document.body.classList.add('maintenance-mode');
+    
+    // Create banner if not exists
+    if (!document.getElementById('maintenance-banner')) {
+      const banner = document.createElement('div');
+      banner.id = 'maintenance-banner';
+      banner.className = 'maintenance-banner';
+      banner.innerHTML = `
+        <div class="maintenance-content">
+          <span class="maintenance-icon">⚠️</span>
+          <span class="maintenance-message">${message}</span>
+        </div>
+      `;
+      document.body.prepend(banner);
+    }
+  }
 
-// Bloque les formulaires en maintenance
-function handleForms() {
-  document.querySelectorAll('form').forEach(form => {
-    form.addEventListener('submit', async (e) => {
-      const { isActive, message } = await checkMaintenance();
-      if (isActive) {
+  deactivate() {
+    document.body.classList.remove('maintenance-mode');
+    const banner = document.getElementById('maintenance-banner');
+    if (banner) banner.remove();
+  }
+
+  setupListeners() {
+    // Block form submissions
+    document.addEventListener('submit', async (e) => {
+      if (document.body.classList.contains('maintenance-mode')) {
         e.preventDefault();
-        alert(`Service indisponible : ${message}`);
+        const { message } = await this.getCurrentStatus();
+        alert(`Service indisponible : ${message || 'Maintenance en cours'}`);
       }
     });
-  });
+
+    // Optional: Add bypass for testing
+    if (window.location.search.includes('maintenance_bypass')) {
+      document.body.classList.add('maintenance-bypass');
+    }
+  }
+
+  startPolling(interval) {
+    setInterval(() => this.checkStatus(), interval);
+  }
+
+  async getCurrentStatus() {
+    try {
+      const response = await fetch(MAINTENANCE_API);
+      return await response.json();
+    } catch {
+      return { isActive: false };
+    }
+  }
 }
 
-// Initialisation
-document.addEventListener('DOMContentLoaded', () => {
-  initMaintenanceCheck();
-  handleForms();
-});
+// Initialize
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', () => new MaintenanceSystem());
+} else {
+  new MaintenanceSystem();
+}

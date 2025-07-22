@@ -26,35 +26,63 @@
             --purple-accent: #7B2CBF;
         }
 
-    /* Animation du bandeau */
-    #maintenance-alert {
-        box-shadow: 0 -5px 30px rgba(220, 38, 38, 0.3);
-    }
-    
-    /* Adaptations pour le mode maintenance */
-    body.maintenance-mode {
+        /* Ajoutez à votre section style */
+        .maintenance-mode {
         position: relative;
-    }
-    
-    body.maintenance-mode::after {
+        }
+
+        .maintenance-mode::after {
         content: '';
         position: fixed;
         top: 0;
         left: 0;
         right: 0;
         bottom: 0;
-        background: rgba(10, 26, 47, 0.7);
-        z-index: 999;
+        background: rgba(10, 26, 47, 0.85);
+        z-index: 1000;
         pointer-events: none;
-    }
-    
-    /* Désactivation des interactions */
-    body.maintenance-mode form,
-    body.maintenance-mode button {
-        filter: grayscale(80%);
-        pointer-events: none;
-    }
-        /* Global Styles */        
+        }
+
+        .maintenance-banner {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        background: #dc3545;
+        color: white;
+        padding: 12px 0;
+        z-index: 2000;
+        text-align: center;
+        font-weight: 500;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+        animation: pulse 2s infinite;
+        }
+
+        .maintenance-content {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+        max-width: 1200px;
+        margin: 0 auto;
+        }
+
+        .maintenance-icon {
+        font-size: 1.2em;
+        }
+
+        .maintenance-bypass .maintenance-banner,
+        .maintenance-bypass::after {
+        display: none !important;
+        }
+
+        @keyframes pulse {
+        0% { opacity: 0.9; }
+        50% { opacity: 1; }
+        100% { opacity: 0.9; }
+        }
+
+        /* Global Styles */
         body {
             font-family: 'Plus Jakarta Sans', sans-serif;
             background-color: var(--blue-night);
