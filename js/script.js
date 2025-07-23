@@ -102,3 +102,83 @@
                 form.classList.add('was-validated');
             }, false);
         });
+// Gestion du loader
+let loaderTimeout;
+
+function showLoaderFor15Seconds() {
+  const loader = document.getElementById('global-loader');
+  
+  // Annuler tout timeout précédent
+  if (loaderTimeout) clearTimeout(loaderTimeout);
+  
+  // Afficher le loader
+  loader.style.opacity = '1';
+  loader.style.pointerEvents = 'auto';
+  
+  // Cacher après 15 secondes
+  loaderTimeout = setTimeout(() => {
+    hideLoader();
+  }, 15000); // 15 secondes
+}
+
+function hideLoader() {
+  const loader = document.getElementById('global-loader');
+  loader.style.opacity = '0';
+  
+  // Désactiver les interactions après l'animation
+  setTimeout(() => {
+    loader.style.pointerEvents = 'none';
+  }, 500); // Doit correspondre à la durée de la transition CSS
+}
+
+// Masquer le loader quand la page est chargée
+window.addEventListener('DOMContentLoaded', () => {
+  showLoaderFor15Seconds();
+});
+
+window.addEventListener('load', () => {
+  // Si la page est déjà chargée avant 15s, cacher immédiatement
+  if (performance.now() < 15000) {
+    setTimeout(hideLoader, 500);
+  }
+});
+
+// Exemple d'utilisation pour les requêtes
+async function fetchMaintenanceStatus() {
+  showLoaderFor15Seconds();
+  const controller = new AbortController();
+  const timeoutId = setTimeout(() => controller.abort(), 10000); // Timeout API à 10s
+  
+  try {
+    const response = await fetch('https://vierund-maintenance.onrender.com/api/maintenance', {
+      signal: controller.signal
+    });
+    
+    clearTimeout(timeoutId);
+    
+    if (!response.ok) throw new Error('Erreur serveur');
+    return await response.json();
+    
+  } catch (error) {
+    console.error('Erreur fetch:', error);
+    throw error;
+  } finally {
+    // Ne pas cacher si les 15s ne sont pas écoulées
+    const elapsed = performance.now();
+    if (elapsed >= 15000) {
+      hideLoader();
+    } else {
+      setTimeout(hideLoader, 15000 - elapsed);
+    }
+  }
+}
+
+// Utilisation
+document.addEventListener('DOMContentLoaded', async () => {
+  try {
+    const status = await fetchMaintenanceStatus();
+    console.log('Status:', status);
+  } catch (error) {
+    console.error('Failed to load status:', error);
+  }
+});
